@@ -30,8 +30,8 @@ objects:
       source:
         type: Git
         git:
-          uri: https://github.com/soltysh/talks.git
-        contextDir: 2015/pyconpl/src/blast-image/
+          uri: https://github.com/soltysh/blast.git
+        contextDir: image
       strategy:
         type: Source
         sourceStrategy:
