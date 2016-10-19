@@ -85,7 +85,7 @@ objects:
                   protocol: TCP
               readinessProbe:
                 httpGet:
-                  path: /blast/api/v1.0/image/x
+                  path: /
                   port: 8080
                   scheme: HTTP
               imagePullPolicy: IfNotPresent
