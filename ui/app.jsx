@@ -1,73 +1,163 @@
 class ImageResults extends React.Component {
   render() {
-    return(
-      <div>
-        {this.props.results.map(item => (
-          <p>{item.tag}: {item.obj}</p>
-        ))}
-      </div>
-    );
+    if (this.props.results.length == 0) {
+      return (
+        <p>Sorry, no results.</p>
+      );
+    } else {
+      return(
+        <div>
+          {this.props.results.map(item => (
+            <p>{item.tag}: {item.obj}</p>
+          ))}
+        </div>
+      );
+    }
   }
 }
 
 class VideoResults extends React.Component {
   render() {
-    return(
-      <div>
-        {this.props.results.map(item => (
-          <p><a href={item.url}>{item.text}</a></p>
-        ))}
-      </div>
-    );
+    if (this.props.results.length == 0) {
+      return (
+        <p>Sorry, no results.</p>
+      );
+    } else {
+      return(
+        <div>
+          {this.props.results.map(item => (
+            <p><a href={item.url}>{item.text}</a></p>
+          ))}
+        </div>
+      );
+    }
   }
 }
 
 class TextResults extends React.Component {
   render() {
-    return (
-      <div>
-        {this.props.results.map(item => (
-          <p><a href={item.url}>{item.text}</a></p>
-        ))}
-      </div>
-    );
+    if (this.props.results.length == 0) {
+      return (
+        <p>Sorry, no results.</p>
+      );
+    } else {
+      return (
+        <div>
+          {this.props.results.map(item => (
+            <p><a href={item.url}>{item.text}</a></p>
+          ))}
+        </div>
+      );
+    }
   }
 }
 
 class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(event) {
+    this.props.onSearchInput(event.target.value);
+  }
+
+  handleSubmit(event) {
+    this.props.onSearchSubmit(event);
+  }
+
   render() {
     return (
-      <form>
+      <ReactBootstrap.Form horizontal>
         <ReactBootstrap.FormGroup>
-          <ReactBootstrap.FormControl type="text" placeholder="Search..." />
+          <ReactBootstrap.Col sm={11}>
+            <ReactBootstrap.FormControl
+              autoFocus="true"
+              type="text"
+              placeholder="Search..."
+              value={this.props.searchInput}
+              onChange={this.handleInputChange}
+            />
+          </ReactBootstrap.Col>
+          <ReactBootstrap.Col sm={1}>
+            <ReactBootstrap.Button
+              type="submit"
+              onClick={this.handleSubmit}>
+              Search
+            </ReactBootstrap.Button>
+          </ReactBootstrap.Col>
         </ReactBootstrap.FormGroup>
-      </form>
+      </ReactBootstrap.Form>
     );
   }
 }
 
 
 class SearchForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchInput: '',
+      textResults: [],
+      videoResults: [],
+      imageResults: [],
+    };
+
+    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+  }
+
+  handleSearchInput(searchInput) {
+    this.setState({searchInput: searchInput});
+  }
+
+  handleSearchSubmit(event) {
+    event.preventDefault();
+    if (this.state.searchInput.length == 0) {
+      return;
+    }
+
+    // TODO construct location based on host window.location.hostname and window.location.port
+
+    fetch('http://localhost:5000/blast/api/v1.0/text/' + this.state.searchInput)
+      .then(result=>result.json())
+      .then(items=>this.setState({textResults: items}));
+
+    fetch('http://localhost:5000/blast/api/v1.0/video/' + this.state.searchInput)
+      .then(result=>result.json())
+      .then(items=>this.setState({videoResults: items}));
+
+    fetch('http://localhost:5000/blast/api/v1.0/image/' + this.state.searchInput)
+      .then(result=>result.json())
+      .then(items=>this.setState({imageResults: items}));
+  }
+
   render() {
     return (
       <div>
         <h3>The Blast</h3>
-        <SearchBar />
+        <SearchBar
+          searchInput={this.state.searchInput}
+          onSearchInput={this.handleSearchInput}
+          onSearchSubmit={this.handleSearchSubmit}
+        />
 
         <br />
 
         <ReactBootstrap.Tabs defaultActiveKey="{1}" id="search-results">
 
           <ReactBootstrap.Tab eventKey="{1}" title="Text">
-            <TextResults results={this.props.textResults} />
+            <TextResults results={this.state.textResults} />
           </ReactBootstrap.Tab>
 
           <ReactBootstrap.Tab eventKey="{2}" title="Video">
-            <VideoResults results={this.props.videoResults} />
+            <VideoResults results={this.state.videoResults} />
           </ReactBootstrap.Tab>
 
           <ReactBootstrap.Tab eventKey="{3}" title="Image">
-            <ImageResults results={this.props.imageResults} />
+            <ImageResults results={this.state.imageResults} />
           </ReactBootstrap.Tab>
 
         </ReactBootstrap.Tabs>
@@ -76,34 +166,7 @@ class SearchForm extends React.Component {
   }
 }
 
-var TEXT_RESULTS = [
-  {url: 'http://www.example.com/cool', text: 'text1'},
-  {url: 'http://www.example.com/awesome', text: 'text2'},
-  {url: 'http://www.example.com/handsome', text: 'text3'},
-  {url: 'http://www.example.com/cute', text: 'text4'},
-  {url: 'http://www.python.org/', text: 'text5'},
-  {url: 'http://www.golang.org/', text: 'text6'},
-]
-
-var VIDEO_RESULTS = [
-  {url: 'http://www.example.com/cool', text: 'video1'},
-  {url: 'http://www.example.com/awesome', text: 'video2'},
-  {url: 'http://www.example.com/handsome', text: 'video3'},
-  {url: 'http://www.example.com/cute', text: 'video4'},
-  {url: 'http://www.python.org/', text: 'video5'},
-  {url: 'http://www.golang.org/', text: 'video6'},
-]
-
-var IMAGE_RESULTS = [
-  {tag: 'image1', obj: 'this is img obj'},
-  {tag: 'image2', obj: 'this is img obj'},
-  {tag: 'image3', obj: 'this is img obj'},
-  {tag: 'image4', obj: 'this is img obj'},
-  {tag: 'image5', obj: 'this is img obj'},
-  {tag: 'image6', obj: 'this is img obj'},
-]
-
 ReactDOM.render(
-  <SearchForm textResults={TEXT_RESULTS} videoResults={VIDEO_RESULTS} imageResults={IMAGE_RESULTS} />,
+  <SearchForm />,
   document.getElementById('container')
 );
