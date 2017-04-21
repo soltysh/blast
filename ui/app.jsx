@@ -119,17 +119,20 @@ class SearchForm extends React.Component {
       return;
     }
 
-    // TODO construct location based on host window.location.hostname and window.location.port
+    // this piece of code assumes certain naming conventions
+    // of the backend services
+    var hostname = window.location.hostname
+    var postfix = hostname.substring(hostname.indexOf("-"));
 
-    fetch('http://localhost:5000/blast/api/v1.0/text/' + this.state.searchInput)
+    fetch('http://text' + postfix + "/blast/api/v1.0/text/" + this.state.searchInput)
       .then(result=>result.json())
       .then(items=>this.setState({textResults: items}));
 
-    fetch('http://localhost:5000/blast/api/v1.0/video/' + this.state.searchInput)
+    fetch('http://video' + postfix + '/blast/api/v1.0/video/' + this.state.searchInput)
       .then(result=>result.json())
       .then(items=>this.setState({videoResults: items}));
 
-    fetch('http://localhost:5000/blast/api/v1.0/image/' + this.state.searchInput)
+    fetch('http://image' + postfix + '/blast/api/v1.0/image/' + this.state.searchInput)
       .then(result=>result.json())
       .then(items=>this.setState({imageResults: items}));
   }
