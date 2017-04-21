@@ -14,17 +14,17 @@ objects:
   - kind: BuildConfig
     apiVersion: v1
     metadata:
-      name: blast-image
+      name: image
       labels:
-        name: blast-image
+        name: image
     spec:
       triggers:
         - type: GitHub
           github:
-            secret: secret101
+            secret: "${GITHUB_SECRET}"
         - type: Generic
           generic:
-            secret: secret101
+            secret: "${GENERIC_SECRET}"
         - type: ImageChange
         - type: ConfigChange
       source:
@@ -42,21 +42,21 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: blast-image:latest
+          name: image:latest
   #
   # image stream configuration
   #
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: blast-image
+      name: image
   #
   # deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-image
+      name: image
     spec:
       strategy:
         type: Rolling
@@ -64,7 +64,7 @@ objects:
           pre:
             failurePolicy: Abort
             execNewPod:
-              containerName: blast-image
+              containerName: image
               command:
               - container-entrypoint
               - python
@@ -79,22 +79,22 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - blast-image
+              - image
             from:
               kind: ImageStreamTag
-              name: blast-image:latest
+              name: image:latest
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-image
+        name: image
       template:
         metadata:
           labels:
-            name: blast-image
+            name: image
         spec:
           containers:
-            - name: blast-image
-              image: blast-image
+            - name: image
+              image: image
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -118,7 +118,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-image
+      name: image
     spec:
       ports:
         - name: web
@@ -126,25 +126,25 @@ objects:
           port: 8080
           targetPort: 8080
       selector:
-        name: blast-image
+        name: image
   #
   # route configuration
   #
   - kind: Route
     apiVersion: v1
     metadata:
-      name: blast-image
+      name: image
     spec:
       to:
         kind: Service
-        name: blast-image
+        name: image
   #
   # backend deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-image-db
+      name: image-db
     spec:
       strategy:
         type: Rolling
@@ -152,15 +152,15 @@ objects:
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-image-db
+        name: image-db
       template:
         metadata:
           labels:
-            name: blast-image-db
+            name: image-db
         spec:
           containers:
-            - name: blast-image-db
-              image: openshift/postgresql-92-centos7:latest
+            - name: image-db
+              image: openshift/postgresql-95-centos7:latest
               ports:
                 - containerPort: 5432
                   protocol: TCP
@@ -179,7 +179,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-image-db
+      name: image-db
     spec:
       ports:
         - name: web
@@ -187,11 +187,21 @@ objects:
           port: 5432
           targetPort: 5432
       selector:
-        name: blast-image-db
+        name: image-db
 #
 # template parameters generation configuration
 #
 parameters:
+  - name: GITUB_SECRET
+    description: github webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
+  - name: GENERIC_SECRET
+    description: generic webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
   - name: POSTGRESQL_USER
     description: postgresql database username
     generate: expression

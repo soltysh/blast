@@ -14,17 +14,17 @@ objects:
   - kind: BuildConfig
     apiVersion: v1
     metadata:
-      name: blast-text
+      name: text
       labels:
-        name: blast-text
+        name: text
     spec:
       triggers:
         - type: GitHub
           github:
-            secret: secret101
+            secret: "${GITHUB_SECRET}"
         - type: Generic
           generic:
-            secret: secret101
+            secret: "${GENERIC_SECRET}"
         - type: ImageChange
         - type: ConfigChange
       source:
@@ -42,21 +42,21 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: blast-text:latest
+          name: text:latest
   #
   # image stream configuration
   #
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: blast-text
+      name: text
   #
   # deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-text
+      name: text
     spec:
       strategy:
         type: Rolling
@@ -64,7 +64,7 @@ objects:
           pre:
             failurePolicy: Abort
             execNewPod:
-              containerName: blast-text
+              containerName: text
               command:
               - container-entrypoint
               - python
@@ -79,22 +79,22 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - blast-text
+              - text
             from:
               kind: ImageStreamTag
-              name: blast-text:latest
+              name: text:latest
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-text
+        name: text
       template:
         metadata:
           labels:
-            name: blast-text
+            name: text
         spec:
           containers:
-            - name: blast-text
-              image: blast-text
+            - name: text
+              image: text
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -118,7 +118,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-text
+      name: text
     spec:
       ports:
         - name: web
@@ -126,25 +126,25 @@ objects:
           port: 8080
           targetPort: 8080
       selector:
-        name: blast-text
+        name: text
   #
   # route configuration
   #
   - kind: Route
     apiVersion: v1
     metadata:
-      name: blast-text
+      name: text
     spec:
       to:
         kind: Service
-        name: blast-text
+        name: text
   #
   # backend deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-text-db
+      name: text-db
     spec:
       strategy:
         type: Rolling
@@ -152,15 +152,15 @@ objects:
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-text-db
+        name: text-db
       template:
         metadata:
           labels:
-            name: blast-text-db
+            name: text-db
         spec:
           containers:
-            - name: blast-text-db
-              image: openshift/mongodb-24-centos7:latest
+            - name: text-db
+              image: openshift/mongodb-32-centos7:latest
               ports:
                 - containerPort: 27017
                   protocol: TCP
@@ -181,7 +181,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-text-db
+      name: text-db
     spec:
       ports:
         - name: web
@@ -189,11 +189,21 @@ objects:
           port: 27017
           targetPort: 27017
       selector:
-        name: blast-text-db
+        name: text-db
 #
 # template parameters generation configuration
 #
 parameters:
+  - name: GITUB_SECRET
+    description: github webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
+  - name: GENERIC_SECRET
+    description: generic webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
   - name: MONGODB_USER
     description: mongodb database username
     generate: expression

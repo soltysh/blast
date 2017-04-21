@@ -14,17 +14,17 @@ objects:
   - kind: BuildConfig
     apiVersion: v1
     metadata:
-      name: blast-video
+      name: video
       labels:
-        name: blast-video
+        name: video
     spec:
       triggers:
         - type: GitHub
           github:
-            secret: secret101
+            secret: "${GITHUB_SECRET}"
         - type: Generic
           generic:
-            secret: secret101
+            secret: "${GENERIC_SECRET}"
         - type: ImageChange
         - type: ConfigChange
       source:
@@ -42,21 +42,21 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: blast-video:latest
+          name: video:latest
   #
   # image stream configuration
   #
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: blast-video
+      name: video
   #
   # deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-video
+      name: video
     spec:
       strategy:
         type: Rolling
@@ -64,7 +64,7 @@ objects:
           pre:
             failurePolicy: Abort
             execNewPod:
-              containerName: blast-video
+              containerName: video
               command:
               - container-entrypoint
               - python
@@ -79,22 +79,22 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - blast-video
+              - video
             from:
               kind: ImageStreamTag
-              name: blast-video:latest
+              name: video:latest
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-video
+        name: video
       template:
         metadata:
           labels:
-            name: blast-video
+            name: video
         spec:
           containers:
-            - name: blast-video
-              image: blast-video
+            - name: video
+              image: video
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -118,7 +118,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-video
+      name: video
     spec:
       ports:
         - name: web
@@ -126,25 +126,25 @@ objects:
           port: 8080
           targetPort: 8080
       selector:
-        name: blast-video
+        name: video
   #
   # route configuration
   #
   - kind: Route
     apiVersion: v1
     metadata:
-      name: blast-video
+      name: video
     spec:
       to:
         kind: Service
-        name: blast-video
+        name: video
   #
   # backend deployment configuration
   #
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: blast-video-db
+      name: video-db
     spec:
       strategy:
         type: Rolling
@@ -152,15 +152,15 @@ objects:
         - type: ConfigChange
       replicas: 1
       selector:
-        name: blast-video-db
+        name: video-db
       template:
         metadata:
           labels:
-            name: blast-video-db
+            name: video-db
         spec:
           containers:
-            - name: blast-video-db
-              image: openshift/mongodb-24-centos7:latest
+            - name: video-db
+              image: openshift/mongodb-32-centos7:latest
               ports:
                 - containerPort: 27017
                   protocol: TCP
@@ -181,7 +181,7 @@ objects:
   - kind: Service
     apiVersion: v1
     metadata:
-      name: blast-video-db
+      name: video-db
     spec:
       ports:
         - name: web
@@ -189,11 +189,21 @@ objects:
           port: 27017
           targetPort: 27017
       selector:
-        name: blast-video-db
+        name: video-db
 #
 # template parameters generation configuration
 #
 parameters:
+  - name: GITUB_SECRET
+    description: github webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
+  - name: GENERIC_SECRET
+    description: generic webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
   - name: MONGODB_USER
     description: mongodb database username
     generate: expression
