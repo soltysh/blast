@@ -1,12 +1,12 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: openshift-microservices
+  name: blast-text-template
   annotations:
     description: This example shows how to create application containing multiple micoroservices in openshift origin v3
     iconClass: icon-python
 labels:
-  template: openshift-microservices-template
+  template: blast-text-template
 objects:
   #
   # build configuration

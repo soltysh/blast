@@ -1,0 +1,66 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: blast-scraper-template
+  annotations:
+    description: This example shows how to create application containing multiple micoroservices in openshift origin v3
+    iconClass: icon-python
+labels:
+  template: blast-scraper-template
+objects:
+  #
+  # build configuration
+  #
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: scraper
+      labels:
+        name: scraper
+    spec:
+      triggers:
+        - type: GitHub
+          github:
+            secret: "${GITHUB_SECRET}"
+        - type: Generic
+          generic:
+            secret: "${GENERIC_SECRET}"
+        - type: ImageChange
+        - type: ConfigChange
+      source:
+        type: Git
+        git:
+          uri: https://github.com/soltysh/blast.git
+        contextDir: scraper
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: python:latest
+            namespace: openshift
+      output:
+        to:
+          kind: ImageStreamTag
+          name: scraper:latest
+  #
+  # image stream configuration
+  #
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: scraper
+#
+# template parameters generation configuration
+#
+parameters:
+  - name: GITUB_SECRET
+    description: github webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
+  - name: GENERIC_SECRET
+    description: generic webhook secret
+    generate: expression
+    from: "[A-Z0-9]{16}"
+    required: true
