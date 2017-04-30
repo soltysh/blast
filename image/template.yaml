@@ -160,7 +160,7 @@ objects:
         spec:
           containers:
             - name: image-db
-              image: openshift/postgresql-95-centos7:latest
+              image: centos/postgresql-95-centos7:latest
               ports:
                 - containerPort: 5432
                   protocol: TCP
