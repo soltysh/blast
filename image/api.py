@@ -15,11 +15,11 @@ api.decorators = [cors.crossdomain(
 class BlastImage(Resource):
 
     def __init__(self):
-        if 'BLAST_IMAGE_DB_SERVICE_HOST' in os.environ:
+        if 'IMAGE_DB_SERVICE_HOST' in os.environ:
             self._db = PostgreSQL(os.environ['POSTGRESQL_USER'], \
                 os.environ['POSTGRESQL_PASSWORD'], \
-                os.environ['BLAST_IMAGE_DB_SERVICE_HOST'], \
-                os.environ['BLAST_IMAGE_DB_SERVICE_PORT'])
+                os.environ['IMAGE_DB_SERVICE_HOST'], \
+                os.environ['IMAGE_DB_SERVICE_PORT'])
         else:
             self._db = PostgreSQL('user', 'password', 'localhost', '5432')
 

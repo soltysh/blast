@@ -16,11 +16,11 @@ def initdb(username, password, host, port):
         ])
 
 if __name__ == '__main__':
-    if 'BLAST_VIDEO_DB_SERVICE_HOST' in os.environ:
+    if 'VIDEO_DB_SERVICE_HOST' in os.environ:
         initdb(os.environ['MONGODB_USER'], \
             os.environ['MONGODB_PASSWORD'], \
-            os.environ['BLAST_VIDEO_DB_SERVICE_HOST'], \
-            os.environ['BLAST_VIDEO_DB_SERVICE_PORT'])
+            os.environ['VIDEO_DB_SERVICE_HOST'], \
+            os.environ['VIDEO_DB_SERVICE_PORT'])
     else:
         initdb('user', 'password', 'localhost', '27017')
 

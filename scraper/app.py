@@ -17,11 +17,11 @@ def random_word():
 
 if __name__ == '__main__':
     user, passwd, host, port = 'user', 'password', 'localhost', '27017'
-    if 'BLAST_TEXT_DB_SERVICE_HOST' in os.environ:
+    if 'TEXT_DB_SERVICE_HOST' in os.environ:
         user = os.environ['MONGODB_USER']
         passwd = os.environ['MONGODB_PASSWORD']
-        host = os.environ['BLAST_TEXT_DB_SERVICE_HOST']
-        port = os.environ['BLAST_TEXT_DB_SERVICE_PORT']
+        host = os.environ['TEXT_DB_SERVICE_HOST']
+        port = os.environ['TEXT_DB_SERVICE_PORT']
 
     # create the spider
     word = random_word()
