@@ -57,10 +57,10 @@ parameters:
   - name: GITUB_SECRET
     description: github webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
+    from: "[A-Za-z0-9]{24}"
     required: true
   - name: GENERIC_SECRET
     description: generic webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
+    from: "[A-Za-z0-9]{24}"
     required: true

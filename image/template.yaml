@@ -91,9 +91,15 @@ objects:
                   scheme: HTTP
               env:
                 - name: POSTGRESQL_USER
-                  value: "${POSTGRESQL_USER}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: image_db_user
                 - name: POSTGRESQL_PASSWORD
-                  value: "${POSTGRESQL_PASSWORD}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: image_db_pass
                 - name: APP_MODULE
                   value: api:app
               imagePullPolicy: IfNotPresent
@@ -152,9 +158,15 @@ objects:
                   protocol: TCP
               env:
                 - name: POSTGRESQL_USER
-                  value: "${POSTGRESQL_USER}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: image_db_user
                 - name: POSTGRESQL_PASSWORD
-                  value: "${POSTGRESQL_PASSWORD}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: image_db_pass
                 - name: POSTGRESQL_DATABASE
                   value: blast_image
               imagePullPolicy: IfNotPresent
@@ -181,20 +193,10 @@ parameters:
   - name: GITUB_SECRET
     description: github webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
+    from: "[A-Za-z0-9]{24}"
     required: true
   - name: GENERIC_SECRET
     description: generic webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
-    required: true
-  - name: POSTGRESQL_USER
-    description: postgresql database username
-    generate: expression
-    from: "user[A-Z0-9]{4}"
-    required: true
-  - name: POSTGRESQL_PASSWORD
-    description: posgresql database password
-    generate: expression
-    from: "[A-Z0-9]{9}"
+    from: "[A-Za-z0-9]{24}"
     required: true

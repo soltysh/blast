@@ -91,9 +91,15 @@ objects:
                   scheme: HTTP
               env:
                 - name: MONGODB_USER
-                  value: "${MONGODB_USER}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: text_db_user
                 - name: MONGODB_PASSWORD
-                  value: "${MONGODB_PASSWORD}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: text_db_pass
                 - name: APP_MODULE
                   value: api:app
               imagePullPolicy: IfNotPresent
@@ -152,9 +158,15 @@ objects:
                   protocol: TCP
               env:
                 - name: MONGODB_USER
-                  value: "${MONGODB_USER}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: text_db_user
                 - name: MONGODB_PASSWORD
-                  value: "${MONGODB_PASSWORD}"
+                  valueFrom:
+                    configMapKeyRef:
+                      name: config
+                      key: text_db_pass
                 - name: MONGODB_DATABASE
                   value: blast_text
                 - name: MONGODB_ADMIN_PASSWORD
@@ -183,25 +195,15 @@ parameters:
   - name: GITUB_SECRET
     description: github webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
+    from: "[A-Za-z0-9]{24}"
     required: true
   - name: GENERIC_SECRET
     description: generic webhook secret
     generate: expression
-    from: "[A-Z0-9]{16}"
-    required: true
-  - name: MONGODB_USER
-    description: mongodb database username
-    generate: expression
-    from: "user[A-Z0-9]{4}"
-    required: true
-  - name: MONGODB_PASSWORD
-    description: mongodb database password
-    generate: expression
-    from: "[A-Z0-9]{9}"
+    from: "[A-Za-z0-9]{24}"
     required: true
   - name: MONGODB_ADMIN_PASSWORD
     description: mongodb database admin password
     generate: expression
-    from: "[A-Z0-9]{9}"
+    from: "[A-Za-z0-9]{24}"
     required: true
