@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask import Flask
 from flask_restful import Resource, Api
@@ -16,17 +17,20 @@ class BlastVideo(Resource):
 
     def __init__(self):
         if 'VIDEO_DB_SERVICE_HOST' in os.environ:
-            self._db = Mongo(os.environ['MONGODB_USER'], \
-                os.environ['MONGODB_PASSWORD'], \
-                os.environ['VIDEO_DB_SERVICE_HOST'], \
-                os.environ['VIDEO_DB_SERVICE_PORT'])
+            self._db = Mongo(os.getenv('MONGODB_USER'), \
+                os.getenv('MONGODB_PASSWORD'), \
+                os.getenv('VIDEO_DB_SERVICE_HOST'), \
+                os.getenv('VIDEO_DB_SERVICE_PORT'))
         else:
             self._db = Mongo('user', 'password', 'localhost', '27017')
 
     def get(self, tag):
         items = []
-        for obj in self._db.get(tag):
-            items.append({'id': str(obj['_id']), 'url': obj['url'], 'title': obj['title']})
+        try:
+            for obj in self._db.get(tag):
+                items.append({'id': str(obj['_id']), 'url': obj['url'], 'title': obj['title']})
+        except Exception as e:
+            print(e, file=sys.stderr)
         return items
 
 

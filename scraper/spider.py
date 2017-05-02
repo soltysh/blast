@@ -1,4 +1,5 @@
 import re
+import sys
 
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
@@ -38,4 +39,7 @@ class DataSpider(CrawlSpider):
         title = selector.xpath('//title/text()').extract()[0]
         self.logger.info("Saving %s - %s", title, response.url)
         if self._client:
-            self._client.blast_text.text.insert_one({'text': title, 'url': response.url})
+            try:
+                self._client.blast_text.text.insert_one({'text': title, 'url': response.url})
+            except Exception as e:
+                print(e, file=sys.stderr)

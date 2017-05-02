@@ -18,10 +18,10 @@ def random_word():
 if __name__ == '__main__':
     user, passwd, host, port = 'user', 'password', 'localhost', '27017'
     if 'TEXT_DB_SERVICE_HOST' in os.environ:
-        user = os.environ['MONGODB_USER']
-        passwd = os.environ['MONGODB_PASSWORD']
-        host = os.environ['TEXT_DB_SERVICE_HOST']
-        port = os.environ['TEXT_DB_SERVICE_PORT']
+        user = os.getenv('TEXT_MONGODB_USER')
+        passwd = os.getenv('TEXT_MONGODB_PASSWORD')
+        host = os.getenv('TEXT_DB_SERVICE_HOST')
+        port = os.getenv('TEXT_DB_SERVICE_PORT')
 
     # create the spider
     word = random_word()

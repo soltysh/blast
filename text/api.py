@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask import Flask
 from flask_restful import Resource, Api
@@ -16,17 +17,20 @@ class BlastText(Resource):
 
     def __init__(self):
         if 'TEXT_DB_SERVICE_HOST' in os.environ:
-            self._db = Mongo(os.environ['MONGODB_USER'], \
-                os.environ['MONGODB_PASSWORD'], \
-                os.environ['TEXT_DB_SERVICE_HOST'], \
-                os.environ['TEXT_DB_SERVICE_PORT'])
+            self._db = Mongo(os.getenv('MONGODB_USER'), \
+                os.getenv('MONGODB_PASSWORD'), \
+                os.getenv('TEXT_DB_SERVICE_HOST'), \
+                os.getenv('TEXT_DB_SERVICE_PORT'))
         else:
             self._db = Mongo('user', 'password', 'localhost', '27017')
 
     def get(self, text):
         items = []
-        for obj in self._db.get(text):
-            items.append({'id': str(obj['_id']), 'url': obj['url'], 'text': obj['text']})
+        try:
+            for obj in self._db.get(text):
+                items.append({'id': str(obj['_id']), 'url': obj['url'], 'text': obj['text']})
+        except Exception as e:
+            print(e, file=sys.stderr)
         return items
 
 
