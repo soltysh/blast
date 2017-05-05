@@ -29,7 +29,7 @@ class DataSpider(CrawlSpider):
                 .format(**textdb))
             self._client.server_info()
         except ServerSelectionTimeoutError:
-            self.logger.info("Could not connect to mongo, nothing will be saved!")
+            self.logger.error("Could not connect to mongo (timeout), nothing will be saved!")
             self._client = None
 
     def parse_item(self, response):
@@ -42,4 +42,4 @@ class DataSpider(CrawlSpider):
             try:
                 self._client.blast_text.text.insert_one({'text': title, 'url': response.url})
             except Exception as e:
-                print(e, file=sys.stderr)
+                self.logger.error("Could not save item: %s", e)
