@@ -17,17 +17,17 @@ class BlastImage(Resource):
 
     def __init__(self):
         if 'IMAGE_DB_SERVICE_HOST' in os.environ:
-            self._db = PostgreSQL(os.getenv('POSTGRESQL_USER'), \
+            self.db = PostgreSQL(os.getenv('POSTGRESQL_USER'), \
                 os.getenv('POSTGRESQL_PASSWORD'), \
                 os.getenv('IMAGE_DB_SERVICE_HOST'), \
                 os.getenv('IMAGE_DB_SERVICE_PORT'))
         else:
-            self._db = PostgreSQL('user', 'password', 'localhost', '5432')
+            self.db = PostgreSQL('user', 'password', 'localhost', '5432')
 
     def get(self, tag):
         items = []
         try:
-            for obj in self._db.get(tag):
+            for obj in self.db.get(tag):
                 items.append({'tag': obj['tag'], 'image': obj['image']})
         except Exception as e:
             print(e, file=sys.stderr)
