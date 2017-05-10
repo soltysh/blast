@@ -14,7 +14,7 @@ objects:
   - kind: ConfigMap
     apiVersion: v1
     metadata:
-      name: text
+      name: video
     data:
       MONGODB_USER: "${MONGODB_USER}"
       MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
@@ -103,12 +103,12 @@ objects:
                 - name: MONGODB_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: text
+                      name: video
                       key: MONGODB_USER
                 - name: MONGODB_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: text
+                      name: video
                       key: MONGODB_PASSWORD
                 - name: APP_MODULE
                   value: api:app
@@ -170,12 +170,12 @@ objects:
                 - name: MONGODB_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: text
+                      name: video
                       key: MONGODB_USER
                 - name: MONGODB_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: text
+                      name: video
                       key: MONGODB_PASSWORD
                 - name: MONGODB_DATABASE
                   value: blast_video
