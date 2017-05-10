@@ -1,12 +1,12 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: openshift-microservices
+  name: blast-image-template
   annotations:
     description: This example shows how to create application containing multiple micoroservices in openshift origin v3
     iconClass: icon-python
 labels:
-  template: openshift-microservices-template
+  template: blast-image
 objects:
   #
   # configuration
@@ -200,12 +200,12 @@ objects:
 # template parameters generation configuration
 #
 parameters:
-  - name: IMAGE_POSTGRESQL_USER
+  - name: POSTGRESQL_USER
     description: postgresql database username
     generate: expression
     from: "[A-Za-z0-9]{24}"
     required: true
-  - name: IMAGE_POSTGRESQL_PASSWORD
+  - name: POSTGRESQL_PASSWORD
     description: posgresql database password
     generate: expression
     from: "[A-Za-z0-9]{24}"

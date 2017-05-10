@@ -1,5 +1,6 @@
-import random
 import os
+import random
+import sys
 import traceback
 import kubernetes.client as k8s
 
@@ -41,7 +42,7 @@ def read_configmap():
     # we're getting text's backend configuration
     obj = k8s.CoreV1Api().read_namespaced_config_map('text', namespace)
 
-    return obj.data['text_db_user'], obj.data['text_db_pass'], \
+    return obj.data['MONGODB_USER'], obj.data['MONGODB_PASSWORD'], \
         os.getenv('TEXT_DB_SERVICE_HOST'), os.getenv('TEXT_DB_SERVICE_PORT')
 
 

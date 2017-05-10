@@ -6,7 +6,7 @@ metadata:
     description: This example shows how to create application containing multiple micoroservices in openshift origin v3
     iconClass: icon-python
 labels:
-  template: blast-scraper-template
+  template: blast-scraper
 objects:
   #
   # build configuration
