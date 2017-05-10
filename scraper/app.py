@@ -38,8 +38,8 @@ def read_configmap():
     k8s.configuration.api_key_prefix['authorization'] = 'Bearer'
     k8s.configuration.api_key['authorization'] = read_file('token')
     k8s.configuration.ssl_ca_cert = SERVICEACCOUNT_LOCATION + 'ca.crt'
-    # we assume the ConfigMap name is 'config'
-    obj = k8s.CoreV1Api().read_namespaced_config_map('config', namespace)
+    # we're getting text's backend configuration
+    obj = k8s.CoreV1Api().read_namespaced_config_map('text', namespace)
 
     return obj.data['text_db_user'], obj.data['text_db_pass'], \
         os.getenv('TEXT_DB_SERVICE_HOST'), os.getenv('TEXT_DB_SERVICE_PORT')

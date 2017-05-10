@@ -9,6 +9,16 @@ labels:
   template: openshift-microservices-template
 objects:
   #
+  # configuration
+  #
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: image
+    data:
+      POSTGRESQL_USER: "${POSTGRESQL_USER}"
+      POSTGRESQL_PASSWORD: "${POSTGRESQL_PASSWORD}"
+  #
   # build configuration
   #
   - kind: BuildConfig
@@ -93,13 +103,13 @@ objects:
                 - name: POSTGRESQL_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: image_db_user
+                      name: image
+                      key: POSTGRESQL_USER
                 - name: POSTGRESQL_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: image_db_pass
+                      name: image
+                      key: POSTGRESQL_PASSWORD
                 - name: APP_MODULE
                   value: api:app
               imagePullPolicy: IfNotPresent
@@ -160,13 +170,13 @@ objects:
                 - name: POSTGRESQL_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: image_db_user
+                      name: image
+                      key: POSTGRESQL_USER
                 - name: POSTGRESQL_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: image_db_pass
+                      name: image
+                      key: POSTGRESQL_PASSWORD
                 - name: POSTGRESQL_DATABASE
                   value: blast_image
               imagePullPolicy: IfNotPresent
@@ -190,6 +200,16 @@ objects:
 # template parameters generation configuration
 #
 parameters:
+  - name: IMAGE_POSTGRESQL_USER
+    description: postgresql database username
+    generate: expression
+    from: "[A-Za-z0-9]{24}"
+    required: true
+  - name: IMAGE_POSTGRESQL_PASSWORD
+    description: posgresql database password
+    generate: expression
+    from: "[A-Za-z0-9]{24}"
+    required: true
   - name: GITUB_SECRET
     description: github webhook secret
     generate: expression

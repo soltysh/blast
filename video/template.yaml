@@ -9,6 +9,16 @@ labels:
   template: blast-video-template
 objects:
   #
+  # configuration
+  #
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: text
+    data:
+      MONGODB_USER: "${MONGODB_USER}"
+      MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
+  #
   # build configuration
   #
   - kind: BuildConfig
@@ -93,13 +103,13 @@ objects:
                 - name: MONGODB_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: video_db_user
+                      name: text
+                      key: MONGODB_USER
                 - name: MONGODB_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: video_db_pass
+                      name: text
+                      key: MONGODB_PASSWORD
                 - name: APP_MODULE
                   value: api:app
               imagePullPolicy: IfNotPresent
@@ -160,13 +170,13 @@ objects:
                 - name: MONGODB_USER
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: video_db_user
+                      name: text
+                      key: MONGODB_USER
                 - name: MONGODB_PASSWORD
                   valueFrom:
                     configMapKeyRef:
-                      name: config
-                      key: video_db_pass
+                      name: text
+                      key: MONGODB_PASSWORD
                 - name: MONGODB_DATABASE
                   value: blast_video
                 - name: MONGODB_ADMIN_PASSWORD
@@ -192,6 +202,16 @@ objects:
 # template parameters generation configuration
 #
 parameters:
+  - name: MONGODB_USER
+    description: mongodb database username
+    generate: expression
+    from: "[A-Za-z0-9]{24}"
+    required: true
+  - name: MONGODB_PASSWORD
+    description: mongodb database password
+    generate: expression
+    from: "[A-Za-z0-9]{24}"
+    required: true
   - name: GITUB_SECRET
     description: github webhook secret
     generate: expression
