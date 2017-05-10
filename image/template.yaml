@@ -18,6 +18,7 @@ objects:
     data:
       POSTGRESQL_USER: "${POSTGRESQL_USER}"
       POSTGRESQL_PASSWORD: "${POSTGRESQL_PASSWORD}"
+      POSTGRESQL_DATABASE: blast_image
   #
   # build configuration
   #
@@ -178,7 +179,10 @@ objects:
                       name: image
                       key: POSTGRESQL_PASSWORD
                 - name: POSTGRESQL_DATABASE
-                  value: blast_image
+                  valueFrom:
+                    configMapKeyRef:
+                      name: image
+                      key: POSTGRESQL_DATABASE
               imagePullPolicy: IfNotPresent
           restartPolicy: Always
   #
