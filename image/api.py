@@ -3,7 +3,7 @@ import sys
 
 from flask import Flask
 from flask_restful import Resource, Api
-from flask.ext.restful.utils import cors
+from flask_restful.utils import cors
 
 from db import PostgreSQL
 
