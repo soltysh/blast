@@ -9,6 +9,30 @@ labels:
   template: blast-scraper
 objects:
   #
+  # cron job
+  #
+  - apiVersion: batch/v2alpha1
+    kind: CronJob
+    metadata:
+      labels:
+        run: scraper
+      name: scraper
+    spec:
+      schedule: 0/5 * * * *
+      jobTemplate:
+        spec:
+          template:
+            metadata:
+              labels:
+                run: scraper
+            spec:
+              containers:
+              - image: soltysh/scraper
+                imagePullPolicy: Always
+                name: scraper
+              restartPolicy: Never
+              serviceAccountName: scraper
+  #
   # build configuration
   #
   - kind: BuildConfig
