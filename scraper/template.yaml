@@ -12,7 +12,7 @@ objects:
   # cron job
   #
   - apiVersion: batch/v2alpha1
-    kind: CronJob
+    kind: ScheduledJob
     metadata:
       labels:
         run: scraper
