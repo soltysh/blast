@@ -28,7 +28,7 @@ pyOpenSSL==19.0.0
 pyparsing==2.2.0
 python-dateutil==2.6.0
 python-string-utils==0.6.0
-PyYAML==5.1
+PyYAML==5.4
 queuelib==1.4.2
 rsa==4.1
 ruamel.yaml==0.14.11
