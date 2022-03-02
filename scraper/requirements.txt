@@ -32,7 +32,7 @@ PyYAML==5.4
 queuelib==1.4.2
 rsa==4.7
 ruamel.yaml==0.14.11
-Scrapy==1.8.1
+Scrapy==1.8.2
 service-identity==16.0.0
 six==1.10.0
 Twisted==22.1.0
