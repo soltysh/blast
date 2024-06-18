@@ -36,7 +36,7 @@ Scrapy==2.11.2
 service-identity==16.0.0
 six==1.10.0
 Twisted==23.10.0
-urllib3==1.26.18
+urllib3==1.26.19
 w3lib==1.17.0
 websocket-client==0.40.0
 zope.interface==4.4.0
